@@ -10,13 +10,6 @@ function App() {
   const [findContact, setFindContact] = useState([]);
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
-  const [newContact, setNewContact] = useState({
-    name:"",
-    email:"",
-    phone:"",
-    notes:"",
-    birthday:""
-  });
 
   const fetchContacts = async (contactId = null) => { 
     try {
@@ -58,15 +51,15 @@ function App() {
     }
   };
 
-  const createNewContact = async(newContact)=>{// I think I can pass the state of the contact instead of the event?
-    e.preventDefault();
-    console.log("contact submitted:", newContact);
+
+  const createNewContact = async(formData)=>{// I think I can pass the state of the contact instead of the event?
+    console.log("contact submitted:", formData);
   
     try{
     const response = await fetch("/contacts", {
-      method: "Post",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newContact),
+      body: JSON.stringify(formData),
     });
     if(!response.ok){
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -97,7 +90,7 @@ function App() {
      <Contacts 
       contacts={contacts} />
       <CreateContact
-      setNewcontact={setNewContact} />
+      createNewContact={createNewContact} />
       {/* <ViewContact /> */}
     </div>
      
