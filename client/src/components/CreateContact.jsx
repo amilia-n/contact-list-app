@@ -1,4 +1,6 @@
-import { useReducer, useState } from "react";
+import { useReducer, useRef } from "react";
+
+const initialState = { name: "", email: "", phone: "", notes: "", birthday: ""}; //intial start for states
 
 function formReducer(state, action) {
   switch (action.type){
@@ -12,23 +14,28 @@ function formReducer(state, action) {
       };
     }
     case "Reset":
-      return initialState;
+      return { ...initialState };
     
     default:
         throw new Error("invalid action type");
   }
 }
 
-const initialState = { name: "", email: "", phone: "", notes: "", birthday: ""}; //intial start for states
-
 function CreateContact({ createNewContact }){
   const [formState, dispatchForm] = useReducer(formReducer, initialState); //dispatch to our reducer function
   //form is being changed dynamically in formState
+  const formRef = useRef(null);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    createNewContact(formState);
+    createNewContact(formState); 
+
+    dispatchForm({
+      type:"Reset"
+    });
+    formRef.current.reset();
   }
+  // the prop createNewContact is a function in the parent app that trigger a fetch to post the new contact created
 
   function formChange(e){ //when on change occurs on the form it will create an event, including inputs when we type an input we want to dispatch input 
     dispatchForm({
@@ -41,7 +48,7 @@ function CreateContact({ createNewContact }){
   
   return(
     <div>{/* can add an event listener on the form to capture changes. Event delegation.Capture input on the parent element*/}
-      <form onSubmit={onSubmit} onChange={formChange}> 
+      <form onSubmit={onSubmit} onChange={formChange} ref={formRef}> 
         <label htmlFor="name">Contact name</label>
         <input 
           id="name"
@@ -74,12 +81,7 @@ function CreateContact({ createNewContact }){
       </form>
       {/* if we want to add more input then we would make sure it matches our dispatch values 
         can have a value field on each input too, to connect it to the object value={formState.name}*/}
-
-      <h2>Added name {formState.name} with email {formState.email}</h2>
     </div>
-
-
-
   )
 }
 

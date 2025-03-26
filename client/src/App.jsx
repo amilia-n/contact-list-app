@@ -1,19 +1,23 @@
+//TO-Do: 
+  //render added elements without refresh
+  
+
 import { useState, useEffect } from 'react'
 import './App.css'
 import Contacts from './components/Contacts';
-// import ViewContact from './components/ViewContact';
+import ViewContact from './components/ViewContact';
 import CreateContact from './components/CreateContact';
 
 
 function App() {
   const [contacts, setContacts] = useState([]);
-  const [findContact, setFindContact] = useState([]);
+  const [findContact, setFindContact] = useState();
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
 
-  const fetchContacts = async (contactId = null) => { 
+  const fetchContacts = async (id) => { 
     try {
-      const url = contactId ? `/contacts/${contactId}` : "/contacts"; 
+      const url = id ? `/contacts/${id}` : "/contacts"; 
       const res = await fetch(url);
 
       if(!res.ok) throw new Error("Failed to fetch contacts");
@@ -21,7 +25,7 @@ function App() {
       const data = await res.json();
       console.log("fetched data: ", data)
 
-      if(contactId){
+      if(id){
         setFindContact(data);
         return data;
       }else{
@@ -64,11 +68,7 @@ function App() {
     if(!response.ok){
       throw new Error(`HTTP error! Status: ${response.status}`);
     } 
-    const data = await response.json();
-    console.log("fetched data:", data);
-    //not sure if I need to store the response, unless I want a message here 
-    //might need an editing state here too 
-  
+    //if I want to send a message to the FE I can do that here
     // if(data.response_code != 0){
     //   console.log("no results found");
       // setErrorHandle(true); //will come back to setting this error handling depending on response from the backend
@@ -77,6 +77,8 @@ function App() {
       console.error("error fetching data: ", error);
     } 
   }
+
+
 
   useEffect(() => {
     fetchContacts();
@@ -87,11 +89,16 @@ function App() {
 
   return (
     <div className="appContainer">
+      <ViewContact 
+      findContact={findContact}
+      starSign={starSign}/>
      <Contacts 
-      contacts={contacts} />
+      contacts={contacts}
+      fetchContacts={fetchContacts}
+      fetchStarSign={fetchStarSign} />
       <CreateContact
       createNewContact={createNewContact} />
-      {/* <ViewContact /> */}
+
     </div>
      
 
