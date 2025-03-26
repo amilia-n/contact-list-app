@@ -1,18 +1,20 @@
-// import express from 'express';
-// import{
-//   getContacts,
-//   getContact,
-//   createContact,
-//   updateContact,
-//   deleteContact,
-// } from '../controllers/contactsConroller.js';
+import express from 'express';
+import{
+  getContact,
+  getContacts,
+  getstarsign,
+  createContact,
+  updateContact,
+  deleteContact,
+} from '../controllers/contactsConroller.js';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get("/", getContacts);
-// router.get("/:id", getContact);
-// router.post("/", createContact);
-// router.put("/:id", updateContact);
-// router.delete("/:id", deleteContact);
+router.get("/birthday/:birthday", getstarsign); //join function to the starsign table
+router.get("/:contact_id", getContact);
+router.get("/", getContacts);
+router.post("/", createContact);
+router.put("/:contact_id", updateContact);
+router.delete("/:contact_id", deleteContact);
 
-// export default router;
+export default router;
