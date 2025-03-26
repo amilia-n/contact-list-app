@@ -10,6 +10,13 @@ function App() {
   const [findContact, setFindContact] = useState([]);
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
+  const [newContact, setNewContact] = useState({
+    name:"",
+    email:"",
+    phone:"",
+    notes:"",
+    birthday:""
+  });
 
   const fetchContacts = async (contactId = null) => { 
     try {
@@ -51,11 +58,36 @@ function App() {
     }
   };
 
-
+  const createNewContact = async(newContact)=>{// I think I can pass the state of the contact instead of the event?
+    e.preventDefault();
+    console.log("contact submitted:", newContact);
+  
+    try{
+    const response = await fetch("/contacts", {
+      method: "Post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newContact),
+    });
+    if(!response.ok){
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    } 
+    const data = await response.json();
+    console.log("fetched data:", data);
+    //not sure if I need to store the response, unless I want a message here 
+    //might need an editing state here too 
+  
+    // if(data.response_code != 0){
+    //   console.log("no results found");
+      // setErrorHandle(true); //will come back to setting this error handling depending on response from the backend
+    //}
+    } catch(error){
+      console.error("error fetching data: ", error);
+    } 
+  }
 
   useEffect(() => {
-    fetchContacts(2); //testing single fetch for function update 
-    fetchStarSign("2017-06-01");//this is test adjust when updating the app
+    fetchContacts();
+    fetchStarSign();
   }, []);
 
 
@@ -64,8 +96,8 @@ function App() {
     <div className="appContainer">
      <Contacts 
       contacts={contacts} />
-      <CreateContact 
-      contacts={contacts} />
+      <CreateContact
+      setNewcontact={setNewContact} />
       {/* <ViewContact /> */}
     </div>
      
@@ -74,3 +106,8 @@ function App() {
 }
 
 export default App
+
+
+
+
+
