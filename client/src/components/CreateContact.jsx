@@ -1,3 +1,5 @@
+//To do: review validation for forms 
+
 import { useReducer, useRef } from "react";
 
 const initialState = { name: "", email: "", phone: "", notes: "", birthday: ""}; //intial start for states
@@ -28,16 +30,25 @@ function CreateContact({ createNewContact }){
 
   const onSubmit = (e) => {
     e.preventDefault();
-    createNewContact(formState); 
+    if(!formState.name || !formState.email || !formState.phone){
+      alert('please complete all required fields')
+    }
+    if (!formState.phone.match(/^\d{10}$/)) {
+      alert('Please enter a valid phone number');
+    }
+    else{
+      createNewContact(formState);
+      dispatchForm({
+        type:"Reset"
+      });
+      formRef.current.reset();
+    }
 
-    dispatchForm({
-      type:"Reset"
-    });
-    formRef.current.reset();
   }
   // the prop createNewContact is a function in the parent app that trigger a fetch to post the new contact created
 
   function formChange(e){ //when on change occurs on the form it will create an event, including inputs when we type an input we want to dispatch input 
+
     dispatchForm({
       type:"FormInput",
       formInput: {name: e.target.name, value: e.target.value}, //we want the input value to be assigned to the object state. Can use e.target.name to assign values to object keys
@@ -60,6 +71,7 @@ function CreateContact({ createNewContact }){
         <input 
           id="email"
           name="email"
+          pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
           required
         />
         <label htmlFor="tel">Contact phone<span className="req">*</span></label>
