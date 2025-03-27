@@ -50,11 +50,16 @@ function ViewContact({ findContact, starSign, deleteContact, selectedBirthday })
   // }
   return(
     <div className="card">
-      <img src="img.jpg" alt="John" style={{"width" : "100%"}}/>
       {findContact.map((contact) => 
       
       <div key={contact.contact_id}>
-        <h1>{contact.name}</h1>
+        <h1>
+          <span className="icon">
+            <button className="editButton" onClick={() => handleEditClick(contact)}><SlPencil /></button>
+          </span>
+          {contact.name}
+        </h1>
+        
         <p>Email: {contact.email}</p>
         <p>Phone: {contact.phone}</p>
         <p>Notes: {contact.notes}</p>
@@ -62,7 +67,6 @@ function ViewContact({ findContact, starSign, deleteContact, selectedBirthday })
         {/* {selectedBirthday === contact.birthday && (
           <p>star sign: {signsForContact(contact.birthday)}</p>
         )} */}
-          <p><button onClick={() => handleEditClick(contact)}><SlPencil /></button></p>
           {isEditOpen && selectedContact?.contact_id === contact.contact_id && (
               <div className="modal">
                 <h3>edit notes</h3>

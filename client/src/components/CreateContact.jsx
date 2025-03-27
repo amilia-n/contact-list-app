@@ -49,34 +49,38 @@ function CreateContact({ createNewContact }){
   return(
     <div>{/* can add an event listener on the form to capture changes. Event delegation.Capture input on the parent element*/}
       <form onSubmit={onSubmit} onChange={formChange} ref={formRef}> 
-        <label htmlFor="name">Contact name</label>
+        <label htmlFor="name">Contact name<span className="req">*</span></label>
         <input 
           id="name"
           type="text"
           name="name"
+          required
         />
-        <label htmlFor="email">Contact email</label>
+        <label htmlFor="email">Contact email<span className="req">*</span></label>
         <input 
           id="email"
           name="email"
+          required
         />
-        <label htmlFor="tel">Contact phone</label>
+        <label htmlFor="tel">Contact phone<span className="req">*</span></label>
         <input 
           id="tel"
           type="tel"
           name="phone"
+          required
         />
-        <label htmlFor="notes">notes</label>
+        <label htmlFor="notes">Notes</label>
         <textarea
           id="notes"
           name="notes"
         />
-        <label htmlFor="birthday">birthday</label>
+        <label htmlFor="birthday">Birthday</label>
         <input
           id="birthday"
           type="date"
           name="birthday"
         />
+        <p><span className="req">*</span> - Required field</p>
         <button type="submit">Create contact</button>
       </form>
       {/* if we want to add more input then we would make sure it matches our dispatch values 
