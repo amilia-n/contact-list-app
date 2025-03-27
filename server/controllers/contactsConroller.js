@@ -17,7 +17,7 @@ export const getstarsign = async(req,res) =>{
   const { birthday } = req.params;
   
   try{
-    const result = await dbConnection.query(`SELECT starsign.star_sign 
+    const result = await dbConnection.query(`SELECT contacts.birthday, starsign.star_sign 
                                             FROM contacts 
                                             FULL JOIN starsign ON DATE(contacts.birthday) BETWEEN DATE(starsign.start_date) AND DATE(starsign.end_date) 
                                             WHERE DATE(contacts.birthday) = $1::DATE`, [birthday]);
@@ -76,6 +76,6 @@ export const deleteContact = async(req,res) =>{
     }
     res.send(`contact with contact_id ${contact_id} has been deleted`);
     } catch (error){
-        console.error(`Could not locate species with common_name: ${contact_id}: `, error);
+        console.error(`Could not locate contact with contact_id: ${contact_id}: `, error);
     }
 }

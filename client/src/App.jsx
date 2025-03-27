@@ -1,5 +1,6 @@
 //TO-Do: 
   //render added elements without refresh
+  //this goes for delete too
   
 
 import { useState, useEffect } from 'react'
@@ -14,6 +15,7 @@ function App() {
   const [findContact, setFindContact] = useState();
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
+
 
   const fetchContacts = async (id) => { 
     try {
@@ -78,11 +80,25 @@ function App() {
     } 
   }
 
+  const deleteContact = async (id) => {
+      try{
+      const url = `/contacts/${ id }`; 
+      const response = await fetch(url, {method: 'DELETE'});
+        if(!response.ok){
+          throw new Error('something went wrong')
+        }
+        console.log(`${id} entry successfully deleted!`);
+      }
+      catch(error) {
+        console.log(error);
+      }
+    }
+
 
 
   useEffect(() => {
     fetchContacts();
-    fetchStarSign();
+    deleteContact();
   }, []);
 
 
@@ -91,11 +107,15 @@ function App() {
     <div className="appContainer">
       <ViewContact 
       findContact={findContact}
-      starSign={starSign}/>
+      starSign={starSign}
+      deleteContact={deleteContact}
+
+      />
      <Contacts 
       contacts={contacts}
       fetchContacts={fetchContacts}
-      fetchStarSign={fetchStarSign} />
+      fetchStarSign={fetchStarSign}
+       />
       <CreateContact
       createNewContact={createNewContact} />
 

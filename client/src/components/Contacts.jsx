@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Contacts({ contacts, fetchContacts, fetchStarSign }){
+function Contacts({ contacts, fetchStarSign, fetchContacts }){
   const[isAddingContact, setIsAddingContact] = useState(false);
 
   return(
@@ -13,10 +13,12 @@ function Contacts({ contacts, fetchContacts, fetchStarSign }){
             <li>{contact.name}</li> 
             <li>{contact.phone}</li>
             <li>{contact.email}</li>
-            <button onClick={() => fetchContacts(contact.contact_id) && fetchStarSign(contact.birthday)}>view more</button>
+            <button onClick={async () => {await fetchContacts(contact.contact_id);
+                                               fetchStarSign(contact.birthday);}}>view more</button>
         </ul>
          )}
       {/* <button>Add Contact</button> this will conditionally render the add contact form */}
+      {/* we add a async/await with fetch contacts and starsign for fetchcontacts to complete before startsign fetch starts */}
     </div>
 
   )
