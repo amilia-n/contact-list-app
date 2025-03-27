@@ -1,5 +1,6 @@
 //to-do: 
 //fix the getsign function to get the correct starsign
+//if we can get the right star sign, maybe we can display an API information?
 
 import { useState } from 'react'
 import { TfiTrash } from "react-icons/tfi";

@@ -1,6 +1,6 @@
 //TO-Do: 
-  //render added elements without refresh
-  //this goes for delete too
+  //render added contacts and deleted ones without refresh
+  //write a test
   
 
 import { useState, useEffect } from 'react'
@@ -105,13 +105,9 @@ function App() {
       }
   };
   
-
-
   useEffect(() => {
     fetchContacts();
   }, []);
-
-
 
   return (
     <div className="appContainer">
