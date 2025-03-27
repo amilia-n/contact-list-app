@@ -1,8 +1,6 @@
 //TO-Do: 
   //render added elements without refresh
   //this goes for delete too
-  //edit a contact and save to the db
-  //form validation
   
 
 import { useState, useEffect } from 'react'
@@ -10,6 +8,7 @@ import './App.css'
 import Contacts from './components/Contacts';
 import ViewContact from './components/ViewContact';
 import CreateContact from './components/CreateContact';
+import SearchBar from './components/SearchBar';
 
 
 function App() {
@@ -18,11 +17,14 @@ function App() {
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
   const [selectedBirthday, setSelectedBirthday] = useState(null);
+  const [isViewMoreOpen, setIsViewMoreOpen] = useState(false);
+  const [searchResult, setSearchResult] = useState("");
 
 
   const handleViewMoreClick = (birthday) => {
     setSelectedBirthday(birthday);
     fetchStarSign(birthday);
+    setIsViewMoreOpen(true);
   };
 
   const fetchContacts = async (id) => { 
@@ -113,27 +115,28 @@ function App() {
 
   return (
     <div className="appContainer">
+      <SearchBar 
+      setSearchResult={setSearchResult}
+      />
       <ViewContact 
       findContact={findContact}
       starSign={starSign}
       deleteContact={deleteContact}
       selectedBirthday={selectedBirthday}
-
+      isViewMoreOpen = {isViewMoreOpen}
+      setIsViewMoreOpen={setIsViewMoreOpen}
       />
      <Contacts 
       contacts={contacts}
       fetchContacts={fetchContacts}
       handleViewMoreClick={handleViewMoreClick}
-       />
+      searchResult={searchResult}
+      />
       <CreateContact
       createNewContact={createNewContact} />
-
     </div>
-     
-
   )
 }
-
 export default App
 
 

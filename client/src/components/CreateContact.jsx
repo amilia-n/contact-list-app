@@ -1,5 +1,3 @@
-//To do: review validation for forms 
-
 import { useReducer, useRef } from "react";
 
 const initialState = { name: "", email: "", phone: "", notes: "", birthday: ""}; //intial start for states
@@ -28,13 +26,26 @@ function CreateContact({ createNewContact }){
   //form is being changed dynamically in formState
   const formRef = useRef(null);
 
+  const isEmailValid = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
+    
     if(!formState.name || !formState.email || !formState.phone){
-      alert('please complete all required fields')
+      alert('please complete all required fields');
+      return;
     }
+    if(!isEmailValid(formState.email)){
+      alert('Please enter a valid email address');
+      return;
+    }
+
     if (!formState.phone.match(/^\d{10}$/)) {
       alert('Please enter a valid phone number');
+      return;
     }
     else{
       createNewContact(formState);
@@ -71,7 +82,6 @@ function CreateContact({ createNewContact }){
         <input 
           id="email"
           name="email"
-          pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
           required
         />
         <label htmlFor="tel">Contact phone<span className="req">*</span></label>

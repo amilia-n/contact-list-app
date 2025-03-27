@@ -6,10 +6,12 @@ import{
   createContact,
   updateContact,
   deleteContact,
+  searchContacts,
 } from '../controllers/contactsConroller.js';
 
 const router = express.Router();
 
+router.get("/search/:name",searchContacts)
 router.get("/birthday/:birthday", getstarsign); //join function to the starsign table
 router.get("/:contact_id", getContact);
 router.get("/", getContacts);

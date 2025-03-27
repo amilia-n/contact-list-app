@@ -1,6 +1,6 @@
 import dbConnection from '../db-connection.js';
 
-export const getContact = async(req,res) =>{
+export const getContact = async(req,res) => {
   const { contact_id } = req.params;
   try{
     const result = await dbConnection.query(`SELECT * FROM contacts WHERE contact_id = $1`, [contact_id]);
@@ -13,7 +13,7 @@ export const getContact = async(req,res) =>{
   }
 }
 
-export const getstarsign = async(req,res) =>{
+export const getstarsign = async(req,res) => {
   const { birthday } = req.params;
   
   try{
@@ -30,7 +30,7 @@ export const getstarsign = async(req,res) =>{
   }
 }
 
-export const getContacts = async(req,res) =>{
+export const getContacts = async(req,res) => {
   try{
     const result = await dbConnection.query(`SELECT * FROM contacts`);
     if(result.rows.length === 0){
@@ -42,7 +42,7 @@ export const getContacts = async(req,res) =>{
   }
 }
 
-export const createContact = async(req,res) =>{
+export const createContact = async(req,res) => {
   const { name, email, phone, notes, birthday } = req.body;
   try{
     const result = await dbConnection.query(`INSERT INTO contacts 
@@ -67,7 +67,7 @@ export const updateContact = async(req,res) =>{
     console.error('Error updating contacts: ', error);
 }
 }
-export const deleteContact = async(req,res) =>{
+export const deleteContact = async(req,res) => {
   
   const { contact_id } = req.params;
   try{
@@ -79,4 +79,18 @@ export const deleteContact = async(req,res) =>{
     } catch (error){
         console.error(`Could not locate contact with contact_id: ${contact_id}: `, error);
     }
+}
+
+export const searchContacts = async(req,res) => {
+  const { name } = req.params;
+  try{
+  const result = await dbConnection.query(`SELECT * FROM contacts WHERE name ILIKE  $1`, [`%${name}%`]);
+  if(result.rowCount === 0){
+    return res.send( { "error": "contact not found" } );
+  }
+  
+  res.json(result.rows);
+  }catch (error){
+  console.error('no contact found', error);
+  }
 }

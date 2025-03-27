@@ -1,3 +1,6 @@
+//to-do: 
+//fix the getsign function to get the correct starsign
+
 import { useState } from 'react'
 import { TfiTrash } from "react-icons/tfi";
 import { SlPencil } from "react-icons/sl";
@@ -5,13 +8,13 @@ import { IoClose } from "react-icons/io5";
 import { MdDoneOutline } from "react-icons/md";
 
 
-function ViewContact({ findContact, starSign, deleteContact, selectedBirthday }){
+function ViewContact({ findContact, starSign, deleteContact, selectedBirthday, isViewMoreOpen, setIsViewMoreOpen }){
   const [editNotes, setEditNotes] = useState("");
   const [isEditOpen, setisEditOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   
   if(!Array.isArray(findContact) || findContact.length === 0 ){
-    return <p>Loading contact...</p>;
+    return;
   }
   const handleEditClick = (contact) => {
     setSelectedContact(contact);
@@ -48,7 +51,7 @@ function ViewContact({ findContact, starSign, deleteContact, selectedBirthday })
   //   const sign = starSign.find(item => item.birthday === birthday);
   //   return sign ? sign.star_sign : "unknown"
   // }
-  return(
+  return isViewMoreOpen ? ( //set the state of the contact being open as a conditional 
     <div className="card">
       {findContact.map((contact) => 
       
@@ -78,15 +81,15 @@ function ViewContact({ findContact, starSign, deleteContact, selectedBirthday })
                 <button onClick={() => setisEditOpen(false)}>close edit</button>
               </div>
               )}
-               <p><button onClick={ () => {
+               <button onClick={ () => {
                 if (contact?.contact_id){
                   deleteContact(contact.contact_id);
-                } else {console.error("contact id is undefined")}}}><TfiTrash /></button></p>
-              <p><button><IoClose /></button></p>
+                } else {console.error("contact id is undefined")}}}><TfiTrash /></button>
+              <button onClick = {() => setIsViewMoreOpen(false)}><IoClose /></button>
         </div>
         )}
     </div>
-    )
+    ) : null;
 }
 
 export default ViewContact;
