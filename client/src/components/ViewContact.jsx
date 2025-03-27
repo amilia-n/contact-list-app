@@ -1,40 +1,86 @@
-//TO-DO: 
-  //need functionality to edit the notes of a subject 
-  //can have delete option here too 
-  //modal profile card 
-  //I want this to dynamically render when profile is selected
-
+import { useState } from 'react'
 import { TfiTrash } from "react-icons/tfi";
 import { SlPencil } from "react-icons/sl";
+import { IoClose } from "react-icons/io5";
+import { MdDoneOutline } from "react-icons/md";
 
-function ViewContact({ findContact, starSign, deleteContact }){
 
-  if(!findContact || Object.keys(findContact).length === 0 ){
-    return <p>loading contact...</p>;
+function ViewContact({ findContact, starSign, deleteContact, selectedBirthday }){
+  const [editNotes, setEditNotes] = useState("");
+  const [isEditOpen, setisEditOpen] = useState(false);
+  const [selectedContact, setSelectedContact] = useState(null);
+  
+  if(!Array.isArray(findContact) || findContact.length === 0 ){
+    return <p>Loading contact...</p>;
+  }
+  const handleEditClick = (contact) => {
+    setSelectedContact(contact);
+    setEditNotes(contact.notes);
+    setisEditOpen(true);
   }
 
-  console.log('find contact in view contact component', findContact);
-
+  const handleNoteChanges = async () => {
+    if(!selectedContact) return;
+    try{
+      const url = `/contacts/${ selectedContact.contact_id }`;
+      const response = await fetch(url,
+        {method: 'PUT',
+          body:JSON.stringify({notes: editNotes}),
+          headers:{
+            'Content-Type': 'application/json',
+          },
+        });
+    if(!response.ok){
+      throw new Error('update failed')
+    }
+    console.log('update successful!');
+    setisEditOpen(false);
+    }
+    catch(error) {
+      console.log(error);
+    }
+  }
+  const formatBirthday = (birthday) => {
+    const date = new Date(birthday);
+    return date.toLocaleDateString('en-CA');
+  };
+  // const signsForContact = (birthday) => {
+  //   const sign = starSign.find(item => item.birthday === birthday);
+  //   return sign ? sign.star_sign : "unknown"
+  // }
   return(
     <div className="card">
       <img src="img.jpg" alt="John" style={{"width" : "100%"}}/>
-      {Object.entries(findContact).map(([key, value]) => ( 
-      <div key={key}>
-        <p>{value}</p>
-      </div>
-      ))}
-      <p>Harvard University</p>
-      {Object.entries(starSign).map(([key,value]) => (
-              <div key={key}>
-              <p>{value}</p>
-            </div>
-
-      ))}
-      <p><button onClick={async () => {
-                if (findContact?.contact_id){
-                  deleteContact(findContact.contact_id);
+      {findContact.map((contact) => 
+      
+      <div key={contact.contact_id}>
+        <h1>{contact.name}</h1>
+        <p>Email: {contact.email}</p>
+        <p>Phone: {contact.phone}</p>
+        <p>Notes: {contact.notes}</p>
+        <p>Birthday: {formatBirthday(contact.birthday)}</p>
+        {/* {selectedBirthday === contact.birthday && (
+          <p>star sign: {signsForContact(contact.birthday)}</p>
+        )} */}
+          <p><button onClick={() => handleEditClick(contact)}><SlPencil /></button></p>
+          {isEditOpen && selectedContact?.contact_id === contact.contact_id && (
+              <div className="modal">
+                <h3>edit notes</h3>
+                <textarea 
+                value={editNotes}
+                onChange={(e) => setEditNotes(e.target.value)}
+                />
+                <button onClick={handleNoteChanges}><MdDoneOutline /></button>
+                <button onClick={() => setisEditOpen(false)}>close edit</button>
+              </div>
+              )}
+               <p><button onClick={ () => {
+                if (contact?.contact_id){
+                  deleteContact(contact.contact_id);
                 } else {console.error("contact id is undefined")}}}><TfiTrash /></button></p>
-      <p><button>close</button></p>
+              <p><button><IoClose /></button></p>
+        </div>
+        )}
     </div>
     )
 }

@@ -7,7 +7,7 @@ export const getContact = async(req,res) =>{
     if(result.rows.length === 0){
       return res.send({ "error": "contact not found" });
     }
-    res.json(result.rows[0]);
+    res.json(result.rows);
   }catch (error){
     console.error('no contact found', error);
   }
@@ -17,14 +17,14 @@ export const getstarsign = async(req,res) =>{
   const { birthday } = req.params;
   
   try{
-    const result = await dbConnection.query(`SELECT contacts.birthday, starsign.star_sign 
+    const result = await dbConnection.query(`SELECT contacts.birthday, contacts.name, starsign.star_sign 
                                             FROM contacts 
                                             FULL JOIN starsign ON DATE(contacts.birthday) BETWEEN DATE(starsign.start_date) AND DATE(starsign.end_date) 
                                             WHERE DATE(contacts.birthday) = $1::DATE`, [birthday]);
     if(result.rows.length === 0){
       return res.send({ "error": "contact not found" });
     }
-    res.json(result.rows[0]);
+    res.json(result.rows);
   }catch (error){
     console.error('no contact found', error);
   }
@@ -62,12 +62,13 @@ export const updateContact = async(req,res) =>{
     const result = await dbConnection.query(`UPDATE contacts SET 
                                             notes = $1 
                                             WHERE contact_id = $2 RETURNING *`, [notes, contact_id]);
-    res.json(result.rows[0]);
+    res.json(result.rows);
   }catch (error) {
     console.error('Error updating contacts: ', error);
 }
 }
 export const deleteContact = async(req,res) =>{
+  
   const { contact_id } = req.params;
   try{
     const result = await dbConnection.query(`DELETE FROM contacts WHERE contact_id = $1 RETURNING *`, [contact_id]);

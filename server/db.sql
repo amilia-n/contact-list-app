@@ -60,7 +60,7 @@ VALUES
 
 INSERT INTO public.starsign (start_date, end_date, star_sign)
 VALUES 
-    ('2000-03-21', '2000-04-19', 'aries'),
+        ('2000-03-21', '2000-04-19', 'aries'),
 		('2000-04-20', '2025-05-20', 'taurus'),
 		('2000-05-21', '2025-06-21', 'gemini'),
 		('2000-06-22', '2025-07-22', 'cancer'),

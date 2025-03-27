@@ -1,6 +1,8 @@
 //TO-Do: 
   //render added elements without refresh
   //this goes for delete too
+  //edit a contact and save to the db
+  //form validation
   
 
 import { useState, useEffect } from 'react'
@@ -12,10 +14,16 @@ import CreateContact from './components/CreateContact';
 
 function App() {
   const [contacts, setContacts] = useState([]);
-  const [findContact, setFindContact] = useState();
+  const [findContact, setFindContact] = useState([]);
   const [errorHandle, setErrorHandle] = useState(false);
   const [starSign, setStarSign] = useState([]);
+  const [selectedBirthday, setSelectedBirthday] = useState(null);
 
+
+  const handleViewMoreClick = (birthday) => {
+    setSelectedBirthday(birthday);
+    fetchStarSign(birthday);
+  };
 
   const fetchContacts = async (id) => { 
     try {
@@ -49,7 +57,7 @@ function App() {
       const data = await res.json();
       console.log("fetched data: ", data)
 
-      return setStarSign(data);
+      setStarSign(prev => [...prev, {birthday, sign: data[0]?.sign_sign || "Unknown"}]);
     } catch(error) {
       console.error("Error fetching starsign: ", error);
       //setErrorHandle(true); //to build out an error component 
@@ -78,11 +86,12 @@ function App() {
     } catch(error){
       console.error("error fetching data: ", error);
     } 
-  }
+  };
 
   const deleteContact = async (id) => {
+    console.log("Deleting contact with ID:", id);
       try{
-      const url = `/contacts/${ id }`; 
+      const url = `/contacts/${ id}`; 
       const response = await fetch(url, {method: 'DELETE'});
         if(!response.ok){
           throw new Error('something went wrong')
@@ -92,8 +101,8 @@ function App() {
       catch(error) {
         console.log(error);
       }
-    }
-
+  };
+  
 
 
   useEffect(() => {
@@ -109,12 +118,13 @@ function App() {
       findContact={findContact}
       starSign={starSign}
       deleteContact={deleteContact}
+      selectedBirthday={selectedBirthday}
 
       />
      <Contacts 
       contacts={contacts}
       fetchContacts={fetchContacts}
-      fetchStarSign={fetchStarSign}
+      handleViewMoreClick={handleViewMoreClick}
        />
       <CreateContact
       createNewContact={createNewContact} />
